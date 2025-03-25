@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banana Catcher Game</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="score">Score: <span id="score">0</span></div>
+    <div class="chances">Chances: <span id="chances">3</span></div>
+    
+    <div class="music-button">
+        <i class="fas fa-volume-up"></i>
+    </div>
+    
+    <audio id="gameMusic" loop>
+        <source src="music/jungle-music.mp3" type="audio/mp3">
+    </audio>
+    
+    <div class="game-container">
+        <div id="monkey"></div>
+        <div id="banana"></div>
+    </div>
+
+    <div id="mathPopup" class="popup">
+        <div class="popup-content">
+            <h2>Solve the Banana Equation!</h2>
+            <div class="timer">Time: <span id="timer">30</span>s</div>
+            <img id="equationImage" src="" alt="Banana Math Equation">
+            <input type="number" id="answer" placeholder="Enter your answer">
+            <button id="submitAnswer">Submit</button>
+        </div>
+    </div>
+
+    <div id="successPopup" class="popup success-popup">
+        <div class="popup-content">
+            <h2>Correct! 🎉</h2>
+            <p>Your answer is right!</p>
+        </div>
+    </div>
+
+    <div id="gameOverPopup" class="popup">
+        <div class="popup-content">
+            <h2>Game Over!</h2>
+            <p>Final Score: <span id="finalScore">0</span></p>
+            <button id="restartButton">Play Again</button>
+        </div>
+    </div>
+
+    <script src="game.js"></script>
+    <script src="music.js"></script>
+</body>
+</html> 
