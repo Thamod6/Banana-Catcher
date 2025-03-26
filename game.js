@@ -30,16 +30,19 @@ let timerInterval = null;
 let timeLeft = 30;
 
 // Monkey movement
-let monkeyLeft = 170;
+let monkeyLeft = 320;  // Set to match CSS initial position
 const monkeySpeed = 20;
+
+// Set initial position when the page loads
+monkey.style.left = monkeyLeft + 'px';
 
 document.addEventListener('keydown', (e) => {
     if (isGameOver || isPaused) return;
     
-    if (e.key === 'ArrowLeft' && monkeyLeft > 0) {
-        monkeyLeft -= monkeySpeed;
-    } else if (e.key === 'ArrowRight' && monkeyLeft < 340) {
-        monkeyLeft += monkeySpeed;
+    if (e.key === 'ArrowLeft') {
+        monkeyLeft = Math.max(0, monkeyLeft - monkeySpeed);
+    } else if (e.key === 'ArrowRight') {
+        monkeyLeft = Math.min(640, monkeyLeft + monkeySpeed);
     }
     
     monkey.style.left = monkeyLeft + 'px';
@@ -49,7 +52,7 @@ document.addEventListener('keydown', (e) => {
 function createBanana() {
     const banana = document.createElement('div');
     banana.className = 'banana';
-    banana.style.left = Math.random() * 370 + 'px';
+    banana.style.left = Math.random() * 640 + 'px';
     banana.style.top = '-30px';
     gameContainer.appendChild(banana);
     return banana;
@@ -233,7 +236,7 @@ function resetGame() {
     isPaused = false;
     bananas = [];
     currentSolution = null;
-    monkeyLeft = 170;
+    monkeyLeft = 320;
     chances = 3;
     clearInterval(timerInterval);
     

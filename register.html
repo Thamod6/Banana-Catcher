@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banana Game - Register</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="login.css">
+</head>
+<body>
+    <div class="monkey-decoration"></div>
+    
+    <div class="register-container">
+        <div class="register-header">
+            <h1>Banana Game</h1>
+            <p>Create your account to start playing!</p>
+        </div>
+        
+        <div id="errorMessage" class="error-message"></div>
+        <div id="successMessage" class="success-message"></div>
+
+        <form id="registerForm" onsubmit="return handleRegister(event)">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required placeholder="Choose a username">
+                <i class="fas fa-user"></i>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required placeholder="Enter your email">
+                <i class="fas fa-envelope"></i>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required placeholder="Create a password">
+                <i class="fas fa-lock"></i>
+                <div class="password-requirements">
+                    Password must contain:
+                    <ul>
+                        <li id="length">At least 8 characters</li>
+                        <li id="uppercase">One uppercase letter</li>
+                        <li id="lowercase">One lowercase letter</li>
+                        <li id="number">One number</li>
+                        <li id="special">One special character</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="confirmPassword">Confirm Password</label>
+                <input type="password" id="confirmPassword" name="confirmPassword" required placeholder="Confirm your password">
+                <i class="fas fa-lock"></i>
+            </div>
+
+            <button type="submit" class="register-btn">
+                <i class="fas fa-user-plus"></i>
+                Register
+            </button>
+        </form>
+
+        <div class="login-link">
+            Already have an account? <a href="login.html">Login here</a>
+        </div>
+    </div>
+
+    <script>
+        // Password validation functions
+        function checkPasswordRequirements(password) {
+            const requirements = {
+                length: password.length >= 8,
+                uppercase: /[A-Z]/.test(password),
+                lowercase: /[a-z]/.test(password),
+                number: /[0-9]/.test(password),
+                special: /[!@#$%^&*(),.?":{}|<>]/.test(password)
+            };
+
+            // Update UI
+            for (const [requirement, isValid] of Object.entries(requirements)) {
+                const element = document.getElementById(requirement);
+                if (isValid) {
+                    element.classList.add('valid');
+                } else {
+                    element.classList.remove('valid');
+                }
+            }
+
+            return Object.values(requirements).every(Boolean);
+        }
+
+        // Password input event listener
+        document.getElementById('password').addEventListener('input', function(e) {
+            checkPasswordRequirements(e.target.value);
+        });
+
+        function handleRegister(event) {
+            event.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            // Validation
+            if (!username || !email || !password || !confirmPassword) {
+                showError('Please fill in all fields');
+                return false;
+            }
+
+            if (!checkPasswordRequirements(password)) {
+                showError('Password does not meet requirements');
+                return false;
+            }
+
+            if (password !== confirmPassword) {
+                showError('Passwords do not match');
+                return false;
+            }
+
+            if (!isValidEmail(email)) {
+                showError('Please enter a valid email address');
+                return false;
+            }
+
+            // For demo purposes, store user data in localStorage
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            
+            // Check if username or email already exists
+            if (users.some(user => user.username === username)) {
+                showError('Username already exists');
+                return false;
+            }
+            
+            if (users.some(user => user.email === email)) {
+                showError('Email already registered');
+                return false;
+            }
+
+            // Add new user
+            users.push({
+                username,
+                email,
+                password // In a real app, this should be hashed
+            });
+            
+            localStorage.setItem('users', JSON.stringify(users));
+            showSuccess('Registration successful! Redirecting to login...');
+            
+            // Redirect to login page after 2 seconds
+            setTimeout(() => {
+                window.location.href = 'login.html';
+            }, 2000);
+        }
+
+        function isValidEmail(email) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+            }, 3000);
+        }
+
+        function showSuccess(message) {
+            const successDiv = document.getElementById('successMessage');
+            successDiv.textContent = message;
+            successDiv.style.display = 'block';
+        }
+    </script>
+</body>
+</html> 

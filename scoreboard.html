@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banana Game - Scoreboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .scoreboard-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            max-width: 800px;
+            width: 90%;
+            z-index: 1000;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .scoreboard {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+
+        .scoreboard th {
+            background: #ffd700;
+            color: #333;
+            padding: 15px;
+            text-align: left;
+            font-size: 1.1em;
+            font-weight: bold;
+            border-radius: 10px;
+        }
+
+        .scoreboard td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            color: #333;
+            font-size: 1.1em;
+        }
+
+        .scoreboard tr:hover {
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        .rank {
+            font-weight: bold;
+            color: #ffd700;
+        }
+
+        .top-3 {
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        .top-3 .rank {
+            color: #ffd700;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .nav-button {
+            background: #ffd700;
+            color: #333;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: bold;
+        }
+
+        .nav-button:hover {
+            background: #ffed4a;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
+        }
+
+        .nav-button i {
+            font-size: 1.2em;
+        }
+
+        .no-scores {
+            text-align: center;
+            color: #666;
+            font-size: 1.2em;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="monkey-decoration"></div>
+
+    <div class="scoreboard-container">
+        <div class="header">
+            <h1>🏆 Top Banana Catchers 🍌</h1>
+            <p>See who's the best at catching bananas!</p>
+        </div>
+
+        <table class="scoreboard">
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Player</th>
+                    <th>Score</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody id="scoreboardBody">
+                <!-- Scores will be populated by JavaScript -->
+            </tbody>
+        </table>
+
+        <div class="nav-buttons">
+            <a href="menu.html" class="nav-button">
+                <i class="fas fa-home"></i>
+                Menu
+            </a>
+            <a href="index.html" class="nav-button">
+                <i class="fas fa-gamepad"></i>
+                Play Game
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Check if user is logged in
+        function checkLogin() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            if (!isLoggedIn) {
+                window.location.href = 'login.html';
+                return;
+            }
+        }
+
+        // Load and display scores
+        function loadScores() {
+            const scores = JSON.parse(localStorage.getItem('scores') || '[]');
+            const scoreboardBody = document.getElementById('scoreboardBody');
+            
+            if (scores.length === 0) {
+                scoreboardBody.innerHTML = `
+                    <tr>
+                        <td colspan="4" class="no-scores">
+                            No scores yet! Be the first to play!
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            // Sort scores by score value (highest first)
+            scores.sort((a, b) => b.score - a.score);
+            
+            // Display top 10 scores
+            scores.slice(0, 10).forEach((score, index) => {
+                const row = document.createElement('tr');
+                if (index < 3) row.classList.add('top-3');
+                
+                row.innerHTML = `
+                    <td class="rank">#${index + 1}</td>
+                    <td>${score.username}</td>
+                    <td>${score.score}</td>
+                    <td>${new Date(score.date).toLocaleDateString()}</td>
+                `;
+                
+                scoreboardBody.appendChild(row);
+            });
+        }
+
+        // Initialize page
+        window.onload = function() {
+            checkLogin();
+            loadScores();
+        };
+    </script>
+</body>
+</html> 
